@@ -3,6 +3,7 @@
 set -o errexit
 set -o nounset
 
+readonly VERSION=1.21
 readonly API_URL="https://api.pushover.net/1/messages.json"
 readonly CONFIG_FILE="pushover-config"
 readonly DEFAULT_CONFIG="/etc/pushover/${CONFIG_FILE}"
@@ -14,16 +15,21 @@ HIDE_REPLY=true
 showHelp()
 {
         local script=`basename "$0"`
-        echo "Send Pushover v1.2 scripted by Nathan Martini"
+        echo "Send Pushover v${VERSION} scripted by Nathan Martini"
         echo "Push notifications to your Android, iOS, or desktop devices"
         echo
         echo "NOTE: This script requires an account at http://www.pushover.net"
         echo
-        echo "usage: ${script} <-t|--token apikey> <-u|--user userkey> <-m|--message message> [options]"
+        echo "usage: ${script} <-t|--token apikey> <-u|--user userkey> [options] <MESSAGE>"
         echo
-        echo "  -t,  --token APIKEY        The pushover.net API Key for your application"
-        echo "  -u,  --user USERKEY        Your pushover.net user key"
-        echo "  -m,  --message MESSAGE     The message to send; supports HTML formatting"
+        echo "  MESSAGE                    The message to send; supports HTML formatting. Quotes are not"
+        echo "                             required but recommended"
+        echo "  -t,  --token APIKEY        The pushover.net API Key for your application. Not required if"
+        echo "                             using a configuration file"
+        echo "  -u,  --user USERKEY        Your pushover.net user key. Not required if using a"
+        echo "                             configuration file"
+        echo
+        echo " Options:"
         echo "  -a,  --attachment filename The Picture you want to send"
         echo "  -T,  --title TITLE         Title of the message"
         echo "  -d,  --device NAME         Comma seperated list of devices to receive message"
@@ -66,25 +72,25 @@ showHelp()
         echo
         echo "EXAMPLES:"
         echo
-        echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -m \"This is a test\""
+        echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy \"This is a test\""
         echo "  Sends a simple \"This is a test\" message to all devices."
         echo
-        echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -m \"This is a test\" -T \"Test Title\""
+        echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -T \"Test Title\" \"This is a test\""
         echo "  Sends a simple \"This is a test\" message with the title \"Test Title\" to all devices."
         echo
-        echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -m \"This is a test\" -d \"Phone,Home Desktop\""
+        echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -d \"Phone,Home Desktop\" \"This is a test\""
         echo "  Sends a simple \"This is a test\" message to the devices named \"Phone\" and \"Home Desktop\"."
         echo
-        echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -m \"This is a test\" -U \"http://www.google.com\" --url-title Google"
+        echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -U \"http://www.google.com\" --url-title Google \"This is a test\""
         echo "  Sends a simple \"This is a test\" message to all devices that contains a link to www.google.com titled \"Google\"."
         echo
-        echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -m \"This is a test\" -p 1"
+        echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -p 1 \"This is a test\""
         echo "  Sends a simple \"This is a test\" high priority message to all devices."
         echo
-        echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -m \"This is a test\" -s bike"
+        echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -s bike \"This is a test\""
         echo "  Sends a simple \"This is a test\" message to all devices that uses the sound of a bike bell as the notification sound."
         echo
-        echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -m \"This is a test Pic\" -a /path/to/pic.jpg"
+        echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -a /path/to/pic.jpg \"This is a test Pic\""
         echo "  Sends a simple \"This is a test Pic\" message to all devices and send the Picture with the message."
         echo
 }
@@ -108,11 +114,6 @@ do
 
     -u|--user)
       user_key="${2:-}"
-      shift
-      ;;
-
-    -m|--message)
-      message="${2:-}"
       shift
       ;;
 
@@ -179,6 +180,8 @@ do
       ;;
 
     *)
+      message="${*:1}"
+      break
       ;;
   esac
 
@@ -205,7 +208,7 @@ if [ -z "${user_key:-}" ]; then
 fi
 
 if [ -z "${message:-}" ]; then
-  echo "-m|--message must be set"
+  echo "positional argument MESSAGE must be set"
   exit 1
 fi
 
