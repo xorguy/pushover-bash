@@ -4,23 +4,30 @@ A Bash shell script to send pushover notifications. A [Pushover account](https:/
 ## Usage
 
 ```
-usage: pushover.sh <apikey> <userkey> <message> [options]
+usage: pushover.sh <-t|--token apikey> <-u|--user userkey> [options] <MESSAGE>
 
-  -t,  --token APIKEY        The pushover.net API Key for your application
-  -u,  --user USERKEY        Your pushover.net user key
-  -m,  --message MESSAGE     The message to send; supports HTML formatting
+  MESSAGE                    The message to send; supports HTML formatting. Quotes are not
+                             required but recommended
+  -t,  --token APIKEY        The pushover.net API Key for your application. Not required if
+                             using a configuration file
+  -u,  --user USERKEY        Your pushover.net user key. Not required if using a
+                             configuration file
+
+ Options:
   -a,  --attachment filename The Picture you want to send
   -T,  --title TITLE         Title of the message
   -d,  --device NAME         Comma seperated list of devices to receive message
   -U,  --url URL             URL to send with message
        --url-title URLTITLE  Title of the URL
+  -H,  --html                Enable HTML formatting, cannot be used with the --monospace flag
+  -M,  --monospace           Enable monospace messages, cannot be used with the --html flag
   -p,  --priority PRIORITY   Priority of the message
                                -2 - no notification/alert
                                -1 - quiet notification
                                 0 - normal priority
                                 1 - bypass the user's quiet hours
                                 2 - require confirmation from the user
-  -e,  --expire SECONDS      Set expiration time for for notifications with priority 2 (default 180)
+  -e,  --expire SECONDS      Set expiration time for notifications with priority 2 (default 180)
   -r,  --retry COUNT         Set retry period for notifications with priority 2 (default 30)
   -s,  --sound SOUND         Notification sound to play with message
                                pushover - Pushover (default)
@@ -45,6 +52,7 @@ usage: pushover.sh <apikey> <userkey> <message> [options]
                                echo - Pushover Echo (long)
                                updown - Up Down (long)
                                none - None (silent)
+  -v,  --verbose             Return API execution reply to stdout
 ```
 
 ## Configuration
@@ -90,47 +98,47 @@ title="title for specific user"
 Send a simple "This is a test" message to all devices using the stored configuration in either **/etc/default/pushover-config** or **$HOME/.pushover/pushover-config**
 
 ```
-pushover.sh -m "This is a test"
+pushover.sh "This is a test"
 ```
 
 Send a simple "This is a test" message to all devices using the specified API token and user key
 
 ```
-pushover.sh -t token -u key -m "This is a test"
+pushover.sh -t token -u key "This is a test"
 ```
 
 Send a simple "This is a test" message with the title "Test Title" to all devices using the specified API token and user key
 
 ```
-pushover.sh -t token -u key -m "This is a test" -T "Test Title"
+pushover.sh -t token -u key -T "Test Title" "This is a test"
 ```
 
 Send a simple "This is a test" message to the devices named "Phone" and "Home Desktop" using the specified API token and user key
 
 ```
-pushover.sh -t token -u key -m "This is a test" -d "Phone,Home Desktop"
+pushover.sh -t token -u key -d "Phone,Home Desktop" "This is a test"
 ```
 
 Send a simple "This is a test" message to all devices that contains a link to www.google.com titled "Google" using the specified API token and user key
 
 ```
-pushover.sh -t token -u key -m "This is a test" -U "http://www.google.com" --url-title Google
+pushover.sh -t token -u key -U "http://www.google.com" --url-title Google "This is a test"
 ```
 
 Send a simple "This is a test" high priority message to all devices using the specified API token and user key
 
 ```
-pushover.sh -t token -u key -m "This is a test" -p 1
+pushover.sh -t token -u key -p 1 "This is a test"
 ```
 
 Send a simple "This is a test" message to all devices that uses the sound of a bike bell as the notification sound using the specified API token and user key
 
 ```
-pushover.sh -t token -u key -m "This is a test" -s bike
+pushover.sh -t token -u key -s bike "This is a test"
 ```
 
 Sends a simple "This is a test Pic" message to all devices and send the Picture with the message
 
 ```
-pushover.sh -t token -u key -m "This is a test Pic" -a /path/to/pic.jpg
+pushover.sh -t token -u key -a /path/to/pic.jpg "This is a test Pic"
 ```
