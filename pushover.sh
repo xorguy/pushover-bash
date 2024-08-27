@@ -14,85 +14,88 @@ HIDE_REPLY=true
 
 showHelp()
 {
-        local script=`basename "$0"`
-        echo "Send Pushover v${VERSION} scripted by Nathan Martini"
-        echo "Push notifications to your Android, iOS, or desktop devices"
-        echo
-        echo "NOTE: This script requires an account at http://www.pushover.net"
-        echo
-        echo "usage: ${script} <-t|--token apikey> <-u|--user userkey> [options] <MESSAGE>"
-        echo
-        echo "  MESSAGE                    The message to send; supports HTML formatting. Quotes are not"
-        echo "                             required but recommended"
-        echo "  -t,  --token APIKEY        The pushover.net API Key for your application. Not required if"
-        echo "                             using a configuration file"
-        echo "  -u,  --user USERKEY        Your pushover.net user key. Not required if using a"
-        echo "                             configuration file"
-        echo
-        echo " Options:"
-        echo "  -a,  --attachment filename The Picture you want to send"
-        echo "  -T,  --title TITLE         Title of the message"
-        echo "  -d,  --device NAME         Comma seperated list of devices to receive message"
-        echo "  -U,  --url URL             URL to send with message"
-        echo "       --url-title URLTITLE  Title of the URL"
-        echo "  -H,  --html                Enable HTML formatting, cannot be used with the --monospace flag"
-        echo "  -M,  --monospace           Enable monospace messages, cannot be used with the --html flag"
-        echo "  -p,  --priority PRIORITY   Priority of the message"
-        echo "                               -2 - no notification/alert"
-        echo "                               -1 - quiet notification"
-        echo "                                0 - normal priority"
-        echo "                                1 - bypass the user's quiet hours"
-        echo "                                2 - require confirmation from the user"
-        echo "  -e,  --expire SECONDS      Set expiration time for notifications with priority 2 (default ${EXPIRE_DEFAULT})"
-        echo "  -r,  --retry COUNT         Set retry period for notifications with priority 2 (default ${RETRY_DEFAULT})"
-        echo "  -s,  --sound SOUND         Notification sound to play with message"
-        echo "                               pushover - Pushover (default)"
-        echo "                               bike - Bike"
-        echo "                               bugle - Bugle"
-        echo "                               cashregister - Cash Register"
-        echo "                               classical - Classical"
-        echo "                               cosmic - Cosmic"
-        echo "                               falling - Falling"
-        echo "                               gamelan - Gamelan"
-        echo "                               incoming - Incoming"
-        echo "                               intermission - Intermission"
-        echo "                               magic - Magic"
-        echo "                               mechanical - Mechanical"
-        echo "                               pianobar - Piano Bar"
-        echo "                               siren - Siren"
-        echo "                               spacealarm - Space Alarm"
-        echo "                               tugboat - Tug Boat"
-        echo "                               alien - Alien Alarm (long)"
-        echo "                               climb - Climb (long)"
-        echo "                               persistent - Persistent (long)"
-        echo "                               echo - Pushover Echo (long)"
-        echo "                               updown - Up Down (long)"
-        echo "                               none - None (silent)"
-        echo "  -v,  --verbose             Return API execution reply to stdout"
-        echo
-        echo "EXAMPLES:"
-        echo
-        echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy \"This is a test\""
-        echo "  Sends a simple \"This is a test\" message to all devices."
-        echo
-        echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -T \"Test Title\" \"This is a test\""
-        echo "  Sends a simple \"This is a test\" message with the title \"Test Title\" to all devices."
-        echo
-        echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -d \"Phone,Home Desktop\" \"This is a test\""
-        echo "  Sends a simple \"This is a test\" message to the devices named \"Phone\" and \"Home Desktop\"."
-        echo
-        echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -U \"http://www.google.com\" --url-title Google \"This is a test\""
-        echo "  Sends a simple \"This is a test\" message to all devices that contains a link to www.google.com titled \"Google\"."
-        echo
-        echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -p 1 \"This is a test\""
-        echo "  Sends a simple \"This is a test\" high priority message to all devices."
-        echo
-        echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -s bike \"This is a test\""
-        echo "  Sends a simple \"This is a test\" message to all devices that uses the sound of a bike bell as the notification sound."
-        echo
-        echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -a /path/to/pic.jpg \"This is a test Pic\""
-        echo "  Sends a simple \"This is a test Pic\" message to all devices and send the Picture with the message."
-        echo
+    local script=$(basename "$0")
+    echo "Send Pushover v${VERSION} scripted by Nathan Martini"
+    echo "Push notifications to your Android, iOS, or desktop devices"
+    echo
+    echo "NOTE: This script requires an account at http://www.pushover.net"
+    echo
+    echo "usage: ${script} <-t|--token apikey> <-u|--user userkey> [options] <MESSAGE>"
+    echo
+    echo "usage: echo "hi" | ${script} <-t|--token apikey> <-u|--user userkey> [options]"
+    echo
+    echo
+    echo "  MESSAGE                    The message to send; supports HTML formatting. Quotes are not"
+    echo "                             required but recommended"
+    echo "  -t,  --token APIKEY        The pushover.net API Key for your application. Not required if"
+    echo "                             using a configuration file"
+    echo "  -u,  --user USERKEY        Your pushover.net user key. Not required if using a"
+    echo "                             configuration file"
+    echo
+    echo " Options:"
+    echo "  -a,  --attachment filename The Picture you want to send"
+    echo "  -T,  --title TITLE         Title of the message"
+    echo "  -d,  --device NAME         Comma separated list of devices to receive message"
+    echo "  -U,  --url URL             URL to send with message"
+    echo "       --url-title URLTITLE  Title of the URL"
+    echo "  -H,  --html                Enable HTML formatting, cannot be used with the --monospace flag"
+    echo "  -M,  --monospace           Enable monospace messages, cannot be used with the --html flag"
+    echo "  -p,  --priority PRIORITY   Priority of the message"
+    echo "                               -2 - no notification/alert"
+    echo "                               -1 - quiet notification"
+    echo "                                0 - normal priority"
+    echo "                                1 - bypass the user's quiet hours"
+    echo "                                2 - require confirmation from the user"
+    echo "  -e,  --expire SECONDS      Set expiration time for notifications with priority 2 (default ${EXPIRE_DEFAULT})"
+    echo "  -r,  --retry COUNT         Set retry period for notifications with priority 2 (default ${RETRY_DEFAULT})"
+    echo "  -s,  --sound SOUND         Notification sound to play with message"
+    echo "                               pushover - Pushover (default)"
+    echo "                               bike - Bike"
+    echo "                               bugle - Bugle"
+    echo "                               cashregister - Cash Register"
+    echo "                               classical - Classical"
+    echo "                               cosmic - Cosmic"
+    echo "                               falling - Falling"
+    echo "                               gamelan - Gamelan"
+    echo "                               incoming - Incoming"
+    echo "                               intermission - Intermission"
+    echo "                               magic - Magic"
+    echo "                               mechanical - Mechanical"
+    echo "                               pianobar - Piano Bar"
+    echo "                               siren - Siren"
+    echo "                               spacealarm - Space Alarm"
+    echo "                               tugboat - Tug Boat"
+    echo "                               alien - Alien Alarm (long)"
+    echo "                               climb - Climb (long)"
+    echo "                               persistent - Persistent (long)"
+    echo "                               echo - Pushover Echo (long)"
+    echo "                               updown - Up Down (long)"
+    echo "                               none - None (silent)"
+    echo "  -v,  --verbose             Return API execution reply to stdout"
+    echo
+    echo "EXAMPLES:"
+    echo
+    echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy \"This is a test\""
+    echo "  Sends a simple \"This is a test\" message to all devices."
+    echo
+    echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -T \"Test Title\" \"This is a test\""
+    echo "  Sends a simple \"This is a test\" message with the title \"Test Title\" to all devices."
+    echo
+    echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -d \"Phone,Home Desktop\" \"This is a test\""
+    echo "  Sends a simple \"This is a test\" message to the devices named \"Phone\" and \"Home Desktop\"."
+    echo
+    echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -U \"http://www.google.com\" --url-title Google \"This is a test\""
+    echo "  Sends a simple \"This is a test\" message to all devices that contains a link to www.google.com titled \"Google\"."
+    echo
+    echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -p 1 \"This is a test\""
+    echo "  Sends a simple \"This is a test\" high priority message to all devices."
+    echo
+    echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -s bike \"This is a test\""
+    echo "  Sends a simple \"This is a test\" message to all devices that uses the sound of a bike bell as the notification sound."
+    echo
+    echo "  ${script} -t xxxxxxxxxx -u yyyyyyyyyy -a /path/to/pic.jpg \"This is a test Pic\""
+    echo "  Sends a simple \"This is a test Pic\" message to all devices and send the Picture with the message."
+    echo
 }
 
 curl --version > /dev/null 2>&1 || { echo "This script requires curl; aborting."; echo; exit 1; }
@@ -102,6 +105,11 @@ if [ -f ${DEFAULT_CONFIG} ]; then
 fi
 if [ -f ${USER_OVERRIDE} ]; then
   source ${USER_OVERRIDE}
+fi
+
+# Read piped input, if available
+if [ ! -t 0 ]; then
+  message=$(cat -)
 fi
 
 while [ $# -gt 0 ]
@@ -180,7 +188,10 @@ do
       ;;
 
     *)
-      message="${*:1}"
+      # If there's no piped input, use the positional argument as the message
+      if [ -z "${message:-}" ]; then
+        message="${*:1}"
+      fi
       break
       ;;
   esac
